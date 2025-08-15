@@ -1,0 +1,145 @@
+{
+    "includeNestedComments": false,
+    "resultsLimit": 50,
+    "startUrls": [
+        {
+            "url": "https://www.facebook.com/thenotcompany/posts/pfbid02doTyUaFhjubgKtENAmknLtwVPEKTJrXp9U4D4UbkTpB6Z4DpCtUMtTwvVgiStsfHl",
+            "method": "GET"
+        },
+        {
+            "url": "https://www.facebook.com/thenotcompany/posts/pfbid02ANpYviYG38jEmuSGySHiC1KELpJyco4wuDWXe1aaLe549WZ3BzMiXrsvWSgmf1Twl",
+            "method": "GET"
+        },
+        {
+            "url": "https://www.facebook.com/thenotcompany/posts/pfbid0aBg39EfhwCv29ViMHx4FPQLAvaNCiKKzsmk5Lpt9ULF74VnXEyBVNuQ8RAnQhhzKl",
+            "method": "GET"
+        },
+        {
+            "url": "https://www.facebook.com/thenotcompany/posts/pfbid0uvXK5oZ82urXGg24Fxo8HwBAWy8x2Kiy8zo26oxdUkWKHvKG2sDn5dcg4Vtu6tTVl",
+            "method": "GET"
+        },
+        {
+            "url": "https://www.facebook.com/thenotcompany/posts/pfbid0VznqDjn35YZcm6iC6zt9dhKteV8ApnjCPwUFkJgAnWdRs1BsbVRdoqcEGB1iAHjNl",
+            "method": "GET"
+        },
+        {
+            "url": "https://www.facebook.com/thenotcompany/posts/pfbid0363XXd9zgReLrBi8P5fGxqVVRKjCbUEcSLjKWR7vL7DPKXxRUzGGujVcDyBDq1kP7l",
+            "method": "GET"
+        },
+        {
+            "url": "https://www.facebook.com/thenotcompany/posts/pfbid02fpKXeCBTFqi7E2bCRBHuNUPhvvmNofj1nNZeSBax1ipjHzNS5ZRW3DV42PFUQ2bml",
+            "method": "GET"
+        },
+        {
+            "url": "https://www.facebook.com/thenotcompany/posts/pfbid0D9aXtGQg2hWzHrFk3fdJuDyUUDm4M32wzNTPFjBBwecDRh1z98qsvS4UixnCGfVsl",
+            "method": "GET"
+        },
+        {
+            "url": "https://www.facebook.com/thenotcompany/posts/pfbid0mAUhiEAf6deQTBGwCpPj3NNno4Z92G5ggRBBYsKbrLyxyfG75nimbKdd1K9K7LXnl",
+            "method": "GET"
+        },
+        {
+            "url": "https://www.facebook.com/thenotcompany/posts/pfbid0vVca5DEqL3yrmAP72YURz3C9VKv4RwChSKQVikEbpoTt25a26iJ8u9146J1oe399l",
+            "method": "GET"
+        },
+        {
+            "url": "https://www.facebook.com/thenotcompany/posts/pfbid0KcpmmQ3C4mwqA15Mho5DZimsAi4PfbuvfKAynLKMcEs7hh4gvN9wUpn6N9RbXGhzl",
+            "method": "GET"
+        },
+        {
+            "url": "https://www.facebook.com/thenotcompany/posts/pfbid0M4hTCHKCtr8n1AakVYSyqMiqqzehPxHrfY5EYb5TM5HbhLY8e61rt3qr4PwPPMvQl",
+            "method": "GET"
+        },
+        {
+            "url": "https://www.facebook.com/thenotcompany/posts/pfbid06rpMKMbRGwVSJGzfNes8Rv9BBRSR88BwANDa1oPk92XYSRsMWL6wgDrXrU83ei7Bl",
+            "method": "GET"
+        },
+        {
+            "url": "https://www.facebook.com/thenotcompany/posts/pfbid02BrmZCDWtfP9y9W4bH88dGVfGkJ41X7x3pEKxvb63qh2PAHDXie9sbTNQPkDBx3qPl",
+            "method": "GET"
+        },
+        {
+            "url": "https://www.facebook.com/thenotcompany/posts/pfbid02PDk337azSr6KCvjhdAQSgkjKZ7LBPSKnizmYdRDQh4S7nEJ4RTPsMJNTjasQDA8Nl",
+            "method": "GET"
+        },
+        {
+            "url": "https://www.facebook.com/thenotcompany/posts/pfbid0Mk1m1F257CmYTz5P2RVnN6AdniuvMyL4fBSQhkdCUTwGcAAc3mGxoNJuhw3Uo35sl",
+            "method": "GET"
+        },
+        {
+            "url": "https://www.facebook.com/thenotcompany/posts/pfbid02W8yqTiUyGxZagaTSN9KrTYBj1fParZb36LrEpJXZqQnjPiNgAkYjrtfu4qUZKTMJl",
+            "method": "GET"
+        },
+        {
+            "url": "https://www.facebook.com/thenotcompany/posts/pfbid02UBQFuhvFvsDypBuCA2pRzTiQxs8s2rbFNyZveyNNZPbvsyRjTdMrVfLmno2hCycfl",
+            "method": "GET"
+        },
+        {
+            "url": "https://www.facebook.com/thenotcompany/posts/pfbid0NvVJ2KEmCKPgjtGmZjSDM5SYFNSMJ9vnkxnWbWdAFWYFikb2sQFoiqmGQmjjYyvEl"
+        },
+        ,
+        "method": "GET"{
+            "url": "https://www.facebook.com/thenotcompany/posts/pfbid023j6BRfBBCMwdFCyanF9ZmLustpeSM7RUwsFkSt4P8W4rKWzJASk2JZ1U3ZNMPZbFl"
+        },
+        {
+            "url": "https://www.facebook.com/thenotcompany/posts/pfbid0tyotJGS2vGqyP2erpKcanXT9aC7zSv3sLBcvswhjZCt2AUgaLKszCv72VWEpjmuUl"
+        },
+        {
+            "url": "https://www.facebook.com/thenotcompany/posts/pfbid0CPTXEPVixyaQ1hpsRQ2xMLqbxF2EV3NaaWUsLVCZEG4nG5GauZsBzy6sRNPM4zxAl"
+        },
+        {
+            "url": "https://www.facebook.com/thenotcompany/posts/pfbid037N5mXzRbNjSRrmAyeKyV5WEAvpLtFk4Rkz9ugbz8h3XbPiYmydNnLSfCYCsihZ8hl"
+        },
+        {
+            "url": "https://www.facebook.com/thenotcompany/posts/pfbid02bks3kUcTXkpZqTuNbvQEuokzK4qvXdv8Hro78UeJAuPExCA5CQFKjamUseYS49yPl"
+        },
+        {
+            "url": "https://www.facebook.com/thenotcompany/posts/pfbid07E7WxsmUJhp7PbG5YjxKhdeNhxzHVtKVksRXLKaaRQng4YtLtCSEagGsFgsMBmE9l"
+        },
+        {
+            "url": "https://www.facebook.com/reel/1577940906248539/"
+        },
+        {
+            "url": "https://www.facebook.com/thenotcompany/posts/pfbid0BUi5uGKUj5xLH4BSQ9j8uyggajj8CHL9MhCmV97AwJ5AWJUqr9rvuTW6D9BEzJuBl"
+        },
+        {
+            "url": "https://www.facebook.com/thenotcompany/posts/pfbid02YQMryXRr6siERHMi9oyEV2CaZGv98G1i2GFYR2ZJRufYCwpWrBnizyQoMB9U7AQ6l"
+        },
+        {
+            "url": "https://www.facebook.com/thenotcompany/posts/pfbid02UHWznHpjm1nhRFgFtdm9uZr9RELRvw9XKYMPYEdHBpJtixd3cicbQxLacQ2UZej6l"
+        },
+        {
+            "url": "https://www.facebook.com/thenotcompany/posts/pfbid02BX7QHjfTZKTgLtGqbERrBdavMMfsoaHQ4juRtKFPf8u2YzXXoEFdvAWkRAybKXETl"
+        },
+        {
+            "url": "https://www.facebook.com/thenotcompany/posts/pfbid02tLTXujQwyz7GrPNvS7bKjHHdA69Y9mZCJqJ6iUWYz6f32Bx3fg3th3721x2KXzDwl"
+        },
+        {
+            "url": "https://www.facebook.com/thenotcompany/posts/pfbid0mxtjQMvsenpFwgJov8QuTLtXS4y6cDm76zXKRAM4q7JbsLcMf8pG4iG7UGJhm8PTl"
+        },
+        {
+            "url": "https://www.facebook.com/thenotcompany/posts/pfbid0DUUKg6Lao7egd4adithMTxTrTUaDzGs1Wv4z1pTAkb8Xesso9QB5Ra51rSBy5p63l"
+        },
+        {
+            "url": "https://www.facebook.com/thenotcompany/posts/pfbid02YA44PjvGeZ1WegYApFtcQXL9sBgEUFfXGx1nZWtNViMpYYRZSpfsLfXCsM66uyw7l"
+        },
+        {
+            "url": "https://www.facebook.com/thenotcompany/posts/pfbid031x71QZCe9mzywuRAT9BGK6KFUeDGPBcMx2wRd8RJjyUg2mutkNPegBbZCn676owel"
+        },
+        {
+            "url": "https://www.facebook.com/thenotcompany/posts/pfbid02gdibDPNk1H8wA3WbHceieVw1yVbokXQisXwSyC6irdUADohrxfvHzYnCDruSBmc5l"
+        },
+        {
+            "url": "https://www.facebook.com/thenotcompany/posts/pfbid09Ls9Eg69nwjyEDutt22BpGAciTE43hjQViauYs6DShYoXRpEoPDbGG9vGTg8JefSl"
+        },
+        {
+            "url": "https://www.facebook.com/thenotcompany/posts/pfbid02mFwMP91E5p11y5rfZsa39PreBCceMJCbiUbbKrVCCo3g35Lrxat9miqm7arbgthkl"
+        },
+        {
+            "url": "https://www.facebook.com/thenotcompany/posts/pfbid0eMaHVP3c7VDcwknTfYt7kFp6rZZe3i67dow1eGKQ3nGFeqbSgMViiYdS7okqkincl"
+        },
+        {
+            "url": "https://www.facebook.com/thenotcompany/posts/pfbid02zSdKnDfAXccdsbm3ywXo6MTnmzztmkEr5JoxhEcNZx1LsMvpFrLa613Zag4Zd5Qrl"
+        }
+    ]
+}
