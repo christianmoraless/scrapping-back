@@ -3,6 +3,7 @@ import { ApifyClient } from 'apify-client';
 import { SocialMediaSource, UnifiedPost } from '../../common/interfaces/UnifiedPostsComments';
 import { InstagramPost } from 'common/interfaces';
 import { SimplifiedTikTokComment, SimplifiedTikTokPost } from 'common/interfaces/tiktok';
+import * as _ from 'lodash';
 
 interface UnifiedProfile {
   platform: string;
@@ -171,6 +172,59 @@ export interface FacebookPostWithComments {
   comments: SimplifiedFacebookComment[];
 }
 
+interface TwitterTweet {
+  id: string;
+  url: string;
+  verified: boolean;
+  username: string;
+  fullname: string;
+  avatar: string;
+  timestamp: string;
+  text: string;
+  links?: string[];
+  images?: string[];
+  isQuote: boolean;
+  isRetweet: boolean;
+  isReply: boolean;
+  replyingTo?: string[];
+  likes: number;
+  replies: number;
+  retweets: number;
+  quotes: number;
+  searchQuery: string;
+  tweetUserId?: string;
+}
+
+export interface TwitterTweetWithReplies extends TwitterTweet {
+  repliesData?: TwitterTweet[];
+}
+
+export interface EnrichedTweet extends TwitterTweet {
+  sentiment?: 'positive' | 'negative' | 'neutral';
+  relevanceScore?: number;
+  keywords?: string[];
+  language?: string;
+  engagementRate?: number;
+  repliesData?: EnrichedTweet[];
+}
+
+interface ProcessingConfig {
+  relevanceThreshold: number;
+  minEngagement: number;
+  brandKeywords: string[];
+  excludeWords: string[];
+  sentimentAnalysis: boolean;
+  languageFilter?: string[];
+  maxTweets?: number;
+}
+
+const config = {
+  relevanceThreshold: 0.7, // Solo tweets muy relevantes
+  minEngagement: 5, // Mínimo engagement para considerar
+  brandKeywords: ['notco', 'not co', 'plant based', 'proteína vegetal'],
+  excludeWords: ['spam', 'bot', 'fake'],
+  maxTweets: 50 // Limitar resultados
+};
 @Injectable()
 export class ScrapperService {
   private apifyClient: ApifyClient;
@@ -814,7 +868,6 @@ export class ScrapperService {
     }
   }
 
-
   async getTiktokVideos(): Promise<SimplifiedTikTokPost[]> {
     try {
       const response = await this.apifyClient.dataset(this.DATASETS.TIKTOK_VIDEOS).listItems();
@@ -874,86 +927,161 @@ export class ScrapperService {
   }
 
   //* TWITTER DATA GETTING */
-  // scrapper.service.ts
 
-  async getTwitterTweetsAndReplies() {
+  /**
+   * Transformador para tweets de Twitter
+   */
+  private transformTwitterPost(tweet: TwitterTweetWithReplies): any {
+    return {
+      id: `twitter_${tweet.id}`,
+      source: 'twitter',
+      url: tweet.url,
+      content: tweet.text,
+      likesCount: tweet.likes,
+      commentsCount: tweet.repliesData?.length || 0,
+      timestamp: tweet.timestamp,
+      author: tweet.username.replace('@', ''), // Remover @ del username
+      extra: {
+        verified: tweet.verified,
+        retweets: tweet.retweets,
+        quotes: tweet.quotes,
+        fullname: tweet.fullname,
+        isRetweet: tweet.isRetweet,
+        isQuote: tweet.isQuote,
+        ...(tweet.images && tweet.images.length > 0 && { images: tweet.images }),
+        ...(tweet.links && tweet.links.length > 0 && { links: tweet.links })
+      },
+      comments: (tweet.repliesData || []).map(reply => this.transformTwitterReply(reply))
+    };
+  }
+
+  /**
+   * Transformador para respuestas de Twitter
+   */
+  private transformTwitterReply(reply: TwitterTweet): any {
+    return {
+      id: reply.id,
+      text: reply.text,
+      author: reply.username.replace('@', ''), // Remover @ del username
+      timestamp: reply.timestamp,
+      likesCount: reply.likes
+    };
+  }
+
+  /**
+   * Función específica para obtener solo tweets relevantes
+   * (la que ya creamos anteriormente)
+   */
+  async getTwitterTweetsAndReplies(): Promise<{
+    tweets: TwitterTweetWithReplies[];
+    total: number;
+  }> {
     try {
+      console.log('Starting Twitter data processing...');
+
       const [tweetsResult] = await Promise.allSettled([
         this.getTwitterTweetsData(),
       ]);
 
-      const allTweets = tweetsResult.status === 'fulfilled' ? tweetsResult.value : [];
-      return allTweets
-      // // Crear mapa de tweets principales por ID
-      // const mainTweetsMap = new Map<string, any>();
-      // const replies: any[] = [];
+      if (tweetsResult.status === 'rejected') {
+        console.error('Failed to fetch Twitter data:', tweetsResult.reason);
+        return { tweets: [], total: 0 };
+      }
 
-      // // Clasificar tweets y respuestas
-      // allTweets.forEach(tweet => {
-      //   // @ts-ignore
-      //   const tweetId = this.extractTwitterId(tweet.url);
-      //   if (!tweetId) return;
+      const allTweets: any = tweetsResult.value || [];
+      console.log(`Fetched ${allTweets.length} tweets from API`);
 
-      //   tweet.id = tweetId; // Normalizar ID
+      // Filtrar por keywords y agrupar - SOLO MAIN TWEETS
+      const relevantTweets = this.filterRelevantTweets(allTweets);
 
-      //   if (tweet.isReply || tweet.replyingTo) {
-      //     replies.push(tweet);
-      //   } else {
-      //     mainTweetsMap.set(tweetId, tweet);
-      //   }
-      // });
+      console.log(`Returning ${relevantTweets.length} relevant main tweets`);
 
-      // // Asignar respuestas a tweets principales
-      // replies.forEach(reply => {
-      //   let mainTweetId: string | null = null;
+      return {
+        tweets: relevantTweets, // Ya son solo main tweets con sus respuestas
+        total: relevantTweets.length
+      };
 
-      //   // Caso 1: Respuesta directa (campo replyingTo)
-      //   if (reply.replyingTo && reply.replyingTo.length > 0) {
-      //     mainTweetId = this.extractTwitterId(reply.replyingTo[0]);
-      //   }
-
-      //   // Caso 2: Respuesta a otro tweet (campo replyToTweet)
-      //   if (!mainTweetId && reply.replyToTweet?.url) {
-      //     mainTweetId = this.extractTwitterId(reply.replyToTweet.url);
-      //   }
-
-      //   // Caso 3: Respuesta mencionada en el texto
-      //   if (!mainTweetId && reply.text) {
-      //     const mentionMatch = reply.text.match(/@\w+/g);
-      //     if (mentionMatch) {
-      //       // Lógica adicional si es necesario
-      //     }
-      //   }
-
-      //   // Asignar respuesta al tweet principal
-      //   if (mainTweetId && mainTweetsMap.has(mainTweetId)) {
-      //     const mainTweet = mainTweetsMap.get(mainTweetId);
-      //     if (!mainTweet.comments) mainTweet.comments = [];
-      //     mainTweet.comments.push(reply);
-      //   }
-      // });
-
-      // // Convertir mapa a array de tweets principales con comentarios
-      // return Array.from(mainTweetsMap.values());
     } catch (error) {
       console.error('Error processing Twitter data:', error);
       throw error;
     }
   }
 
-  // private extractTwitterId(url: string): string | null {
-  //   // Ejemplo de URL: "https://x.com/f0odsucks/status/1952871298259894606"
-  //   const parts = url.split('/');
-  //   const statusIndex = parts.indexOf('status');
+  private keywords = [
+    'notco',
+    'not co',
+    'not company',
+    'vegan',
+    'proteína vegetal',
+    'not'
+  ];
 
-  //   if (statusIndex !== -1 && statusIndex < parts.length - 1) {
-  //     return parts[statusIndex + 1];
-  //   }
+  /**
+   * Filtra tweets por keywords y agrupa con respuestas - SOLO MAIN TWEETS
+   */
+  private filterRelevantTweets(tweets: TwitterTweet[]): TwitterTweetWithReplies[] {
+    if (!tweets || !Array.isArray(tweets)) {
+      console.log('No tweets to process or invalid data');
+      return [];
+    }
 
-  //   // Si no se encuentra en el formato esperado, intentar con expresión regular
-  //   const match = url.match(/\/(\d+)$/);
-  //   return match ? match[1] : null;
-  // }
+    // 1. Filtrar todos los tweets por keywords
+    const relevantTweets = tweets.filter(tweet => {
+      if (!tweet || typeof tweet !== 'object') {
+        return false;
+      }
+      return this.containsKeywords(tweet.text);
+    });
+
+    console.log(`Filtered ${relevantTweets.length} relevant tweets from ${tweets.length} total`);
+
+    // 2. Separar SOLO main tweets y respuestas
+    const mainTweets = relevantTweets.filter(tweet => !tweet.isReply);
+    const replies = relevantTweets.filter(tweet => tweet.isReply);
+
+    console.log(`Main tweets: ${mainTweets.length}, Replies: ${replies.length}`);
+
+    // 3. Agrupar respuestas con tweets principales
+    return this.groupTweetsWithReplies(mainTweets, replies);
+  }
+
+  private containsKeywords(text: string): boolean {
+    if (!text || typeof text !== 'string') {
+      return false;
+    }
+
+    const textLower = text.toLowerCase();
+    return this.keywords.some(keyword =>
+      textLower.includes(keyword.toLowerCase())
+    );
+  }
+
+  private groupTweetsWithReplies(
+    mainTweets: TwitterTweet[],
+    replies: TwitterTweet[]
+  ): TwitterTweetWithReplies[] {
+
+    const tweetsWithReplies: TwitterTweetWithReplies[] = mainTweets.map(tweet => ({
+      ...tweet,
+      repliesData: []
+    }));
+
+    replies.forEach((reply: any) => {
+      if (reply.replyingTo && reply.replyingTo.length > 0) {
+        const mainTweet = tweetsWithReplies.find(tweet => {
+          const replyingToUsername = reply.replyingTo[0].replace('/', '@');
+          return tweet.username === replyingToUsername ||
+            tweet.username === reply.replyingTo[0];
+        });
+
+        if (mainTweet && mainTweet.repliesData) {
+          mainTweet.repliesData.push(reply);
+        }
+      }
+    });
+
+    return tweetsWithReplies;
+  }
 
   async getTwitterTweetsData() {
     try {
@@ -964,43 +1092,6 @@ export class ScrapperService {
       return Promise.reject(error);
     }
   }
-
-  // async getTwitterMainTweets(): Promise<any[]> {
-  //   try {
-  //     const response = await this.apifyClient.dataset(this.DATASETS.TWITTER_TWEETS).listItems();
-
-  //     // Filtrar solo tweets principales (no replies)
-  //     return response.items.filter(tweet =>
-  //       !tweet.isReply &&
-  //       //@ts-ignore
-  //       !tweet.replyingTo?.length &&
-  //       !tweet.isQuote &&
-  //       !tweet.isRetweet
-  //     );
-  //   } catch (error) {
-  //     console.error('Error fetching Twitter main tweets:', error);
-  //     throw error;
-  //   }
-  // }
-
-  // async getTwitterReplies(): Promise<any[]> {
-  //   try {
-  //     const response = await this.apifyClient.dataset(this.DATASETS.TWITTER_TWEETS).listItems();
-
-  //     // Filtrar solo replies (comentarios)
-  //     return response.items.filter(tweet =>
-  //       tweet.isReply ||
-  //       //@ts-ignore
-  //       (tweet.replyingTo && tweet.replyingTo.length > 0)
-  //     );
-  //   } catch (error) {
-  //     console.error('Error fetching Twitter replies:', error);
-  //     throw error;
-  //   }
-  // }
-
-
-
 
   async getUnifiedMetrics(): Promise<UnifiedMetrics> {
     const profiles = await this.getProfilesInfo();
@@ -1019,26 +1110,30 @@ export class ScrapperService {
 
   async getUnifiedSocialPosts(): Promise<UnifiedPost[]> {
     try {
-      const [instagramResult, youtubeResult, tiktokResult, facebookResult,] = await Promise.allSettled([
+      const [instagramResult, youtubeResult, tiktokResult, facebookResult, twitterResult] = await Promise.allSettled([
         this.getInstagramPostAndComments(),
         this.getYouTubeVideosAndComments(),
         this.getTiktokVideosAndComments(),
         this.getFacebookPostsWithComments(),
+        this.getTwitterTweetsAndReplies(),
       ]);
+
 
       const instagramPosts = instagramResult.status === 'fulfilled' ? instagramResult.value : [];
       const youtubePosts = youtubeResult.status === 'fulfilled' ? youtubeResult.value : [];
       const tiktokPosts = tiktokResult.status === 'fulfilled' ? tiktokResult.value : [];
       const facebookPosts = facebookResult.status === 'fulfilled' ? facebookResult.value : [];
+      const twitterPosts = twitterResult.status === 'fulfilled' ? twitterResult.value.tweets : [];
 
       const unifiedInstagram = instagramPosts.map(post => this.transformInstagramPost(post));
       const unifiedYoutube = youtubePosts.map(video => this.transformYoutubeVideo(video));
       const unifiedTiktok = tiktokPosts.map(video => this.transformTikTokPost(video));
-      const unifiedFacebook = facebookPosts.map(video => this.transformTikTokPost(video));
+      const unifiedFacebook = facebookPosts.map(video => this.transformFacebookPost(video));
+      const unifiedTwitter = twitterPosts.map(tweet => this.transformTwitterPost(tweet));
 
-      console.log([...unifiedInstagram, ...unifiedYoutube, ...unifiedTiktok].length)
 
-      return [...unifiedInstagram, ...unifiedYoutube, ...unifiedTiktok, ...unifiedFacebook]
+
+      return [...unifiedInstagram, ...unifiedYoutube, ...unifiedTiktok, ...unifiedFacebook, ...unifiedTwitter]
 
     } catch (error) {
       console.error('Error unifying social media posts:', error);
@@ -1138,11 +1233,12 @@ export class ScrapperService {
   }
 
   async getFacebookPostsWithComments(): Promise<any[]> {
-    const rawPosts = await this.getFacebookPostAndComments();
-    return rawPosts.map(post => this.transformFacebookPost(post));
+    return await this.getFacebookPostAndComments();
   }
 
   private transformFacebookPost(post: any): any {
+    // console.log({ post })
+    console.log({ post })
     return {
       id: `facebook_${post.id}`,
       source: SocialMediaSource.FACEBOOK,
@@ -1151,7 +1247,7 @@ export class ScrapperService {
       likesCount: post.likes || 0,
       commentsCount: post.commentsCount || 0,
       timestamp: new Date(post.time),
-      author: post.user?.name || '',
+      author: post.user.name || '',
       authorUrl: post.user?.profileUrl,
       thumbnailUrl: post.thumbnailUrl,
       extra: {
