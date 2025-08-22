@@ -3,7 +3,7 @@ import { ApifyClient } from 'apify-client';
 import { SocialMediaSource, UnifiedPost } from '../../common/interfaces/UnifiedPostsComments';
 import { InstagramPost } from 'common/interfaces';
 import { SimplifiedTikTokComment, SimplifiedTikTokPost } from 'common/interfaces/tiktok';
-import * as _ from 'lodash';
+// import * as _ from 'lodash';
 
 interface UnifiedProfile {
   platform: string;
